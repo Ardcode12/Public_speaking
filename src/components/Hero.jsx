@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Play, ChevronDown } from 'lucide-react';
+import { ArrowRight, Play } from 'lucide-react';
 import HeroModel from './HeroModel';
 import './Hero.css';
 
