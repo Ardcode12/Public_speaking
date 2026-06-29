@@ -15,6 +15,24 @@
   min-height: 520px;
 }
 
+@media (max-width: 768px) {
+  .hero-model__wrap {
+    min-height: 320px;
+  }
+  .hero-model__wrap canvas {
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-model__wrap {
+    min-height: 260px;
+  }
+  .hero-model__wrap canvas {
+    min-height: 260px;
+  }
+}
+
 /* LOADING */
 .hero-model__loading {
   display: flex;

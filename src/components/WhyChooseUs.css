@@ -133,8 +133,15 @@
 }
 
 @media (max-width: 600px) {
-  .why__body { padding: 72px 0; }
-  .why__reasons-grid { grid-template-columns: 1fr; }
+  .why__body { padding: 40px 0; }
+  .why__header { margin-bottom: 40px; }
+  .why__reasons-grid { grid-template-columns: 1fr; gap: 16px; }
   .why__stats-grid { grid-template-columns: repeat(2, 1fr); }
   .why__stat-number { font-size: 2.2rem; }
+  .why__stats-band { padding: 40px 0; }
+}
+
+@media (max-width: 400px) {
+  .why__stat-number { font-size: 1.8rem; }
+  .why__reason { padding: 24px 20px; }
 }

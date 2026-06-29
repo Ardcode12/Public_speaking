@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, Suspense, useState } from 'react';
+import React, { useRef, useEffect, Suspense, useState, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, OrbitControls, Environment } from '@react-three/drei';
 import { clone as cloneSkeleton } from 'three/examples/jsm/utils/SkeletonUtils';
@@ -7,12 +7,26 @@ import { HERO_MODEL_SETTINGS } from '../config/modelSettings';
 import './HeroModel.css';
 
 /* ─────────────────────────────────────────────────────────────────
+   MOBILE DETECTION HOOK
+   Detects phone/tablet so we can strip expensive GPU features
+───────────────────────────────────────────────────────────────── */
+const useIsMobile = () => {
+    const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+    useEffect(() => {
+        const handler = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handler, { passive: true });
+        return () => window.removeEventListener('resize', handler);
+    }, []);
+    return isMobile;
+};
+
+/* ─────────────────────────────────────────────────────────────────
    GENERIC GLB MODEL — driven entirely by a settings object (S)
 ───────────────────────────────────────────────────────────────── */
-const GLBModel = ({ settings: S, onLoaded }) => {
-    const meshRef   = useRef();
-    const mixerRef  = useRef();
-    const clockRef  = useRef(new THREE.Clock());
+const GLBModel = ({ settings: S, onLoaded, isMobile }) => {
+    const meshRef  = useRef();
+    const mixerRef = useRef();
+    const clockRef = useRef(new THREE.Clock());
 
     const { scene, animations } = useGLTF(S.modelPath);
     // SkeletonUtils.clone properly deep-clones skinned meshes + skeleton
@@ -67,8 +81,9 @@ const GLBModel = ({ settings: S, onLoaded }) => {
             scale={S.scale}
             position={[S.x, S.y, S.z]}
             rotation={[S.rotX, S.rotY, S.rotZ]}
-            castShadow
-            receiveShadow
+            // Shadows disabled on mobile — expensive on mobile GPUs
+            castShadow={!isMobile}
+            receiveShadow={!isMobile}
         />
     );
 };
@@ -98,10 +113,21 @@ const FallbackModel = () => {
 };
 
 /* ─────────────────────────────────────────────────────────────────
-   LIGHTS
+   LIGHTS — mobile uses cheaper 2-light setup
 ───────────────────────────────────────────────────────────────── */
-const SceneLighting = () => {
+const SceneLighting = ({ isMobile }) => {
     const L = HERO_MODEL_SETTINGS.lighting;
+    if (isMobile) {
+        // Mobile: stronger ambient so PBR materials aren't dark, fewer shadow lights
+        return (
+            <>
+                <ambientLight intensity={2.0} color={L.ambientColor} />
+                <pointLight intensity={2.0} color={L.spotColor} position={[2, 4, 3]} />
+                <pointLight intensity={1.0} color={L.rimColor}  position={[-2, 1, -3]} />
+                <pointLight intensity={0.8} color={0xffffff}    position={[0, 2, 4]} />
+            </>
+        );
+    }
     return (
         <>
             <ambientLight intensity={L.ambientIntensity} color={L.ambientColor} />
@@ -114,28 +140,34 @@ const SceneLighting = () => {
                 position={[L.fillX, L.fillY, L.fillZ]} />
             <pointLight intensity={L.rimIntensity} color={L.rimColor}
                 position={[L.rimX, L.rimY, L.rimZ]} />
-            {/* Extra fill light from woman's side */}
             <pointLight intensity={0.6} color={0x80ffb0} position={[3, 2, 2]} />
         </>
     );
 };
 
 /* ─────────────────────────────────────────────────────────────────
-   SCENE CONTENT — both mike + woman, each with its own Suspense
+   SCENE CONTENT
 ───────────────────────────────────────────────────────────────── */
-const SceneContent = ({ mikeReady, womanReady, onModelLoaded }) => {
+const SceneContent = ({ mikeReady, womanReady, onModelLoaded, isMobile }) => {
     return (
         <>
             {mikeReady ? (
                 <Suspense fallback={<FallbackModel />}>
-                    <GLBModel settings={HERO_MODEL_SETTINGS.model} onLoaded={onModelLoaded} />
+                    <GLBModel
+                        settings={HERO_MODEL_SETTINGS.model}
+                        onLoaded={onModelLoaded}
+                        isMobile={isMobile}
+                    />
                 </Suspense>
             ) : (
                 <FallbackModel />
             )}
             {womanReady && HERO_MODEL_SETTINGS.womanModel.enabled && (
                 <Suspense fallback={null}>
-                    <GLBModel settings={HERO_MODEL_SETTINGS.womanModel} />
+                    <GLBModel
+                        settings={HERO_MODEL_SETTINGS.womanModel}
+                        isMobile={isMobile}
+                    />
                 </Suspense>
             )}
         </>
@@ -148,7 +180,7 @@ const SceneContent = ({ mikeReady, womanReady, onModelLoaded }) => {
 const LoadingSpinner = () => (
     <div className="hero-model__loading">
         <div className="hero-model__spinner" />
-        <span>Loading model…</span>
+        <span>Loading…</span>
     </div>
 );
 
@@ -156,15 +188,21 @@ const LoadingSpinner = () => (
    MAIN EXPORT
 ───────────────────────────────────────────────────────────────── */
 const HeroModel = ({ onModelLoaded }) => {
-    const S   = HERO_MODEL_SETTINGS;
-    const C   = S.camera;
+    const S    = HERO_MODEL_SETTINGS;
+    const C    = S.camera;
     const Ctrl = S.controls;
     const Env  = S.environment;
     const Cv   = S.canvas;
 
+    const isMobile = useIsMobile();
+
     const [mikeReady,  setMikeReady]  = useState(false);
     const [womanReady, setWomanReady] = useState(false);
     const [checking,   setChecking]   = useState(true);
+
+    const handleModelLoaded = useCallback(() => {
+        if (onModelLoaded) onModelLoaded();
+    }, [onModelLoaded]);
 
     useEffect(() => {
         let resolved = 0;
@@ -172,8 +210,8 @@ const HeroModel = ({ onModelLoaded }) => {
         const done   = () => { resolved++; if (resolved === total) setChecking(false); };
 
         fetch(S.model.modelPath, { method: 'HEAD' })
-            .then(res => { setMikeReady(res.ok); if (!res.ok && onModelLoaded) onModelLoaded(); })
-            .catch(() => { setMikeReady(false); if (onModelLoaded) onModelLoaded(); })
+            .then(res => { setMikeReady(res.ok); if (!res.ok) handleModelLoaded(); })
+            .catch(() => { setMikeReady(false); handleModelLoaded(); })
             .finally(done);
 
         if (S.womanModel.enabled) {
@@ -185,24 +223,47 @@ const HeroModel = ({ onModelLoaded }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // Mobile renderer config — strips expensive features to save VRAM/battery
+    const glConfig = isMobile
+        ? {
+            antialias:           false,   // no MSAA on mobile
+            alpha:               true,
+            toneMapping:         THREE.LinearToneMapping,
+            toneMappingExposure: 1.0,
+            powerPreference:     'low-power',
+          }
+        : {
+            antialias:           Cv.antialias,
+            alpha:               Cv.alpha,
+            toneMapping:         THREE.ACESFilmicToneMapping,
+            toneMappingExposure: Cv.toneMappingExposure,
+            powerPreference:     'high-performance',
+          };
+
     return (
         <div className="hero-model__wrap">
             {checking ? (
                 <LoadingSpinner />
             ) : (
                 <Canvas
-                    shadows={Cv.shadows}
-                    gl={{
-                        antialias: Cv.antialias,
-                        alpha: Cv.alpha,
-                        toneMapping: THREE.ACESFilmicToneMapping,
-                        toneMappingExposure: Cv.toneMappingExposure,
-                    }}
+                    // dpr caps device pixel ratio — mobile at 3× DPR = 9× pixels, capped to 1.5×
+                    dpr={isMobile ? [1, 1.5] : [1, 2]}
+                    // Shadows disabled entirely on mobile
+                    shadows={isMobile ? false : Cv.shadows}
+                    gl={glConfig}
                     camera={{ fov: C.fov, position: [C.x, C.y, C.z], near: 0.1, far: 100 }}
                     style={{ background: 'transparent' }}
+                    frameloop="always"
                 >
-                    <SceneLighting />
-                    <Environment preset={Env.preset} background={Env.background} blur={Env.blur} />
+                    <SceneLighting isMobile={isMobile} />
+
+                    {/* Mobile uses lighter 'sunset' preset; desktop uses 'city' */}
+                    <Environment
+                        preset={isMobile ? 'sunset' : Env.preset}
+                        background={Env.background}
+                        blur={Env.blur}
+                    />
+
                     <OrbitControls
                         enabled={Ctrl.orbitEnabled}
                         enableZoom={Ctrl.zoomEnabled}
@@ -213,19 +274,17 @@ const HeroModel = ({ onModelLoaded }) => {
                         maxPolarAngle={Ctrl.maxPolarAngle}
                         enableDamping
                         dampingFactor={Ctrl.dampingFactor}
+                        // On mobile touching the model triggers orbit — allow page scroll too
+                        touches={{ ONE: isMobile ? 2 : 1, TWO: 0 }}
                     />
+
                     <SceneContent
                         mikeReady={mikeReady}
                         womanReady={womanReady}
-                        onModelLoaded={onModelLoaded}
+                        onModelLoaded={handleModelLoaded}
+                        isMobile={isMobile}
                     />
                 </Canvas>
-            )}
-
-            {!checking && (
-                <div className="hero-model__hint">
-
-                </div>
             )}
         </div>
     );
