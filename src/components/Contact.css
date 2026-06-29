@@ -1,6 +1,6 @@
 /* ---- CONTACT ---- */
 .contact {
-  padding: 120px 0;
+  padding: 40px 0;
   background: var(--section-bg);
 }
 
@@ -211,6 +211,6 @@
 }
 
 @media (max-width: 560px) {
-  .contact { padding: 80px 0; }
+  .contact { padding: 32px 0; }
   .contact__form-row { grid-template-columns: 1fr; }
 }

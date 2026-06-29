@@ -1,36 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { ArrowRight, Play, Mic2, ChevronDown } from 'lucide-react';
+import React from 'react';
+import { ArrowRight, Play, ChevronDown } from 'lucide-react';
 import HeroModel from './HeroModel';
 import './Hero.css';
 
-const STATS = [
-    { value: '500+', label: 'Speakers Trained' },
-    { value: '10+',  label: 'Years Experience' },
-    { value: '98%',  label: 'Success Rate' },
-    { value: '50+',  label: 'Corporate Clients' },
-];
-
-const Hero = () => {
-    const [visible, setVisible] = useState(false);
-
-    useEffect(() => {
-        const t = setTimeout(() => setVisible(true), 100);
-        return () => clearTimeout(t);
-    }, []);
-
+const Hero = ({ onModelLoaded }) => {
     return (
         <section className="hero" id="home">
             {/* DARK BACKGROUND */}
             <div className="hero__bg-solid" />
 
             {/* GRID LAYOUT: left text | right 3D */}
-            <div className={`hero__layout container ${visible ? 'hero__layout--visible' : ''}`}>
+            <div className="hero__layout container" data-aos="fade-up">
 
                 {/* ── LEFT: CONTENT ── */}
                 <div className="hero__content">
-                    <div className="hero__badge">
-                        <Mic2 size={13} strokeWidth={2.5} />
-                        Trusted by 500+ Speakers Worldwide
+
+                    {/* KURAL big name */}
+                    <div className="hero__kural-brand">
+                        <span className="hero__kural-name">KURAL</span>
+                        <span className="hero__kural-sub">VoiceForward</span>
                     </div>
 
                     <h1 className="hero__title">
@@ -55,21 +43,11 @@ const Hero = () => {
                             Explore Courses
                         </a>
                     </div>
-
-                    {/* STATS */}
-                    <div className="hero__stats">
-                        {STATS.map((s, i) => (
-                            <div key={i} className="hero__stat">
-                                <span className="hero__stat-value">{s.value}</span>
-                                <span className="hero__stat-label">{s.label}</span>
-                            </div>
-                        ))}
-                    </div>
                 </div>
 
                 {/* ── RIGHT: 3D MODEL ── */}
                 <div className="hero__model-side">
-                    <HeroModel />
+                    <HeroModel onModelLoaded={onModelLoaded} />
                 </div>
             </div>
 

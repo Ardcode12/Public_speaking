@@ -1,19 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { Building2, Target, Users, Monitor, ArrowRight, Check } from 'lucide-react';
 import './Services.css';
 
-const useInView = (threshold = 0.15) => {
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setInView(true); obs.disconnect(); }
-    }, { threshold });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return [ref, inView];
-};
 
 const services = [
   {
@@ -51,12 +39,11 @@ const services = [
 ];
 
 const Services = () => {
-  const [sectionRef, inView] = useInView(0.1);
 
   return (
-    <section className="services" id="services" ref={sectionRef}>
+    <section className="services" id="services">
       <div className="container">
-        <div className={`services__header fade-in-up ${inView ? 'visible' : ''}`}>
+        <div className="services__header" data-aos="fade-up">
           <span className="section-label">What We Offer</span>
           <h2 className="section-title">Programs Built for <span className="underline-accent">Every Speaker</span></h2>
           <p className="section-subtitle">
@@ -72,7 +59,7 @@ const Services = () => {
               <div
                 key={service.id}
                 id={service.id}
-                className={`service-card fade-in-up ${inView ? 'visible' : ''}`}
+                className="service-card" data-aos="fade-up"
                 style={{ transitionDelay: `${i * 0.12}s` }}
               >
                 {service.badge && (

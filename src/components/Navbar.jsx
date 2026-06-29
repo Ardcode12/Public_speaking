@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Mic2 } from 'lucide-react';
 import './Navbar.css';
 
 const navLinks = [
@@ -34,8 +33,13 @@ const Navbar = () => {
       <div className="navbar__container container">
         {/* LOGO */}
         <a href="#home" className="navbar__logo" onClick={() => handleNavClick('#home')}>
-          <Mic2 size={20} strokeWidth={2} className="navbar__logo-icon" />
-          <span className="navbar__logo-text">Voice<span className="navbar__logo-accent">Forward</span></span>
+          <div className="navbar__logo-img-wrap">
+            <img src="/images/newlogo.png" alt="Kural logo" className="navbar__logo-img" />
+          </div>
+          <div className="navbar__logo-names">
+            <span className="navbar__logo-kural">KURAL</span>
+            <span className="navbar__logo-text">Voice<span className="navbar__logo-accent">Forward</span></span>
+          </div>
         </a>
 
         {/* DESKTOP LINKS */}

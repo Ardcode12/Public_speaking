@@ -14,12 +14,12 @@ export const HERO_MODEL_SETTINGS = {
     // 📦 MODEL FILE
     // ══════════════════════════════════════════════════════════════════
     model: {
-        modelPath: '/models/speaker.glb',   // ← Change this to your .glb filename
+        modelPath: '/models/microfono_vintage.glb',   // ← Change this to your .glb filename
 
         // ── TRANSFORM ─────────────────────────────────────────────
-        scale:  1.8,    // Size multiplier (1 = original size)
+        scale:  0.3,    // Size multiplier (1 = original size)
         x:      0.0,    // Left (-) / Right (+)
-        y:     -1.2,    // Down (-) / Up (+)
+        y:     -3.5,    // Down (-) / Up (+)
         z:      0.0,    // Forward (+) / Back (-)
 
         // ── ROTATION (radians: Math.PI = 180°) ────────────────────
@@ -32,7 +32,7 @@ export const HERO_MODEL_SETTINGS = {
         animationSpeed: 1.0,    // Playback speed multiplier
 
         // ── IDLE FLOATING ─────────────────────────────────────────
-        idleFloat:       true,  // Enable subtle up/down float
+        idleFloat:       false,  // Enable subtle up/down float
         idleFloatSpeed:  0.8,   // Float oscillation speed
         idleFloatAmount: 0.12,  // How far it floats (units)
         idleRotSpeed:    0.4,   // Auto-spin speed (0 = off)

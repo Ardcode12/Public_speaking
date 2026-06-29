@@ -1,24 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { MapPin, Phone, Mail, Clock, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import './Contact.css';
 
-const useInView = (threshold = 0.1) => {
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setInView(true); obs.disconnect(); }
-    }, { threshold });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return [ref, inView];
-};
 
 const initialForm = { name: '', email: '', phone: '', interest: '', message: '' };
 
 const Contact = () => {
-  const [sectionRef, inView] = useInView(0.08);
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
@@ -51,10 +38,10 @@ const Contact = () => {
   };
 
   return (
-    <section className="contact" id="contact" ref={sectionRef}>
+    <section className="contact" id="contact">
       <div className="container contact__grid">
         {/* INFO SIDE */}
-        <div className={`contact__info fade-in-left ${inView ? 'visible' : ''}`}>
+        <div className="contact__info" data-aos="fade-left">
           <span className="section-label">Get In Touch</span>
           <h2 className="section-title">Let's Start Your <span className="underline-accent">Speaking Journey</span></h2>
           <p className="section-subtitle">
@@ -80,16 +67,21 @@ const Contact = () => {
           </div>
 
           <div className="contact__social">
-            {['LinkedIn', 'Twitter', 'YouTube', 'Instagram'].map((s, i) => (
-              <a key={i} href="#" className="contact__social-link" aria-label={s} id={`contact-social-${s.toLowerCase()}`}>
-                {s}
+            {[
+              { name: 'LinkedIn', url: 'https://linkedin.com/company/voiceforward' },
+              { name: 'Twitter', url: 'https://twitter.com/voiceforward' },
+              { name: 'YouTube', url: 'https://youtube.com/@voiceforward' },
+              { name: 'Instagram', url: 'https://instagram.com/voiceforward' },
+            ].map((s, i) => (
+              <a key={i} href={s.url} className="contact__social-link" target="_blank" rel="noopener noreferrer" aria-label={s.name} id={`contact-social-${s.name.toLowerCase()}`}>
+                {s.name}
               </a>
             ))}
           </div>
         </div>
 
         {/* FORM SIDE */}
-        <div className={`contact__form-wrap fade-in-right ${inView ? 'visible' : ''}`}>
+        <div className="contact__form-wrap" data-aos="fade-right">
           {submitted ? (
             <div className="contact__success">
               <div className="contact__success-icon">✅</div>

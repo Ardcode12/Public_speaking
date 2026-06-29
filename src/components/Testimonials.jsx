@@ -1,19 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import Slider from 'react-slick';
 import './Testimonials.css';
 
-const useInView = (threshold = 0.15) => {
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setInView(true); obs.disconnect(); }
-    }, { threshold });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return [ref, inView];
-};
 
 const testimonials = [
   {
@@ -75,7 +63,6 @@ const StarRating = ({ count }) => (
 );
 
 const Testimonials = () => {
-  const [sectionRef, inView] = useInView(0.1);
 
   const settings = {
     dots: true,
@@ -93,9 +80,9 @@ const Testimonials = () => {
   };
 
   return (
-    <section className="testimonials" id="testimonials" ref={sectionRef}>
+    <section className="testimonials" id="testimonials">
       <div className="container">
-        <div className={`testimonials__header fade-in-up ${inView ? 'visible' : ''}`}>
+        <div className="testimonials__header" data-aos="fade-up">
           <span className="section-label">Success Stories</span>
           <h2 className="section-title">Hear It From <span className="underline-accent">Our Speakers</span></h2>
           <p className="section-subtitle">
@@ -104,7 +91,7 @@ const Testimonials = () => {
           </p>
         </div>
 
-        <div className={`testimonials__slider fade-in-up ${inView ? 'visible' : ''}`} style={{ transitionDelay: '0.2s' }}>
+        <div className="testimonials__slider" data-aos="fade-up" style={{ transitionDelay: '0.2s' }}>
           <Slider {...settings}>
             {testimonials.map((t) => (
               <div key={t.id} className="testimonial-slide">

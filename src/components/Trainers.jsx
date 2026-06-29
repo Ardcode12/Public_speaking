@@ -1,18 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import './Trainers.css';
 
-const useInView = (threshold = 0.15) => {
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setInView(true); obs.disconnect(); }
-    }, { threshold });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return [ref, inView];
-};
 
 const trainers = [
   {
@@ -48,12 +36,11 @@ const trainers = [
 ];
 
 const Trainers = () => {
-  const [sectionRef, inView] = useInView(0.1);
 
   return (
-    <section className="trainers" id="trainers" ref={sectionRef}>
+    <section className="trainers" id="trainers">
       <div className="container">
-        <div className={`trainers__header fade-in-up ${inView ? 'visible' : ''}`}>
+        <div className="trainers__header" data-aos="fade-up">
           <span className="section-label">Meet the Team</span>
           <h2 className="section-title">World-Class <span className="underline-accent">Trainers</span>, Real Results</h2>
           <p className="section-subtitle">
@@ -67,7 +54,7 @@ const Trainers = () => {
             <div
               key={trainer.id}
               id={trainer.id}
-              className={`trainer-card fade-in-up ${inView ? 'visible' : ''}`}
+              className="trainer-card" data-aos="fade-up"
               style={{ transitionDelay: `${i * 0.15}s` }}
             >
               <div className="trainer-card__img-wrap">

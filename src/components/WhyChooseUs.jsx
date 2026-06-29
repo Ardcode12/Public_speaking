@@ -60,7 +60,7 @@ const StatCounter = ({ stat, active }) => {
 };
 
 const WhyChooseUs = () => {
-  const [sectionRef, inView] = useInView(0.1);
+  const [sectionRef, inView] = useInView(0.15);
 
   return (
     <section className="why" id="why-us" ref={sectionRef}>
@@ -75,7 +75,7 @@ const WhyChooseUs = () => {
 
       {/* REASONS */}
       <div className="container why__body">
-        <div className={`why__header fade-in-up ${inView ? 'visible' : ''}`}>
+        <div className="why__header" data-aos="fade-up">
           <span className="section-label">Why VoiceForward</span>
           <h2 className="section-title">The Difference Is In <span className="underline-accent">The Details</span></h2>
           <p className="section-subtitle">
@@ -88,7 +88,7 @@ const WhyChooseUs = () => {
           {reasons.map(({ Icon, title, desc }, i) => (
             <div
               key={i}
-              className={`why__reason fade-in-up ${inView ? 'visible' : ''}`}
+              className="why__reason" data-aos="fade-up"
               style={{ transitionDelay: `${i * 0.1}s` }}
             >
               <div className="why__reason-icon-wrap">

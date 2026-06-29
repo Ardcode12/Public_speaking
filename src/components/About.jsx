@@ -2,18 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Target, Trophy, Globe2, ArrowRight } from 'lucide-react';
 import './About.css';
 
-const useInView = (threshold = 0.2) => {
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setInView(true); obs.disconnect(); }
-    }, { threshold });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return [ref, inView];
-};
 
 const pillars = [
   { Icon: Target, title: 'Personalised Coaching', desc: 'Tailored programs built around your unique voice and goals.' },
@@ -22,7 +10,6 @@ const pillars = [
 ];
 
 const About = () => {
-  const [sectionRef, inView] = useInView(0.15);
   const [parallaxOffset, setParallaxOffset] = useState(0);
   const imgRef = useRef(null);
 
@@ -38,10 +25,10 @@ const About = () => {
   }, []);
 
   return (
-    <section className="about" id="about" ref={sectionRef}>
+    <section className="about" id="about">
       <div className="container about__grid">
         {/* IMAGE SIDE */}
-        <div className={`about__image-wrap fade-in-left ${inView ? 'visible' : ''}`} ref={imgRef}>
+        <div className="about__image-wrap" data-aos="fade-left" ref={imgRef}>
           <div className="about__image-inner" style={{ transform: `translateY(${parallaxOffset}px)` }}>
             <img src="/images/about.png" alt="VoiceForward training workshop in action" className="about__img" />
           </div>
@@ -54,7 +41,7 @@ const About = () => {
         </div>
 
         {/* TEXT SIDE */}
-        <div className={`about__text fade-in-right ${inView ? 'visible' : ''}`}>
+        <div className="about__text" data-aos="fade-right">
           <span className="section-label">Our Mission</span>
           <h2 className="section-title">
             We Help People <span className="underline-accent">Find Their Voice</span> and Lead with Confidence

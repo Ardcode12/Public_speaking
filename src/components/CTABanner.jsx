@@ -1,26 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import './CTABanner.css';
 
-const useInView = (threshold = 0.2) => {
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setInView(true); obs.disconnect(); }
-    }, { threshold });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return [ref, inView];
-};
 
 const CTABanner = () => {
-  const [sectionRef, inView] = useInView(0.2);
 
   return (
-    <section className="cta-banner" id="cta-banner" ref={sectionRef}>
+    <section className="cta-banner" id="cta-banner">
       <div className="cta-banner__bg" />
-      <div className={`container cta-banner__content fade-in-up ${inView ? 'visible' : ''}`}>
+      <div className="container cta-banner__content" data-aos="fade-up">
         <div className="cta-banner__text">
           <span className="cta-banner__label">Ready to Transform?</span>
           <h2 className="cta-banner__title">

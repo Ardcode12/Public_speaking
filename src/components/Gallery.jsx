@@ -1,18 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import './Gallery.css';
 
-const useInView = (threshold = 0.1) => {
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setInView(true); obs.disconnect(); }
-    }, { threshold });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return [ref, inView];
-};
 
 const galleryItems = [
   { id: 'gallery-1', img: '/images/hero.png', label: 'Annual Leadership Summit 2024', span: 'wide' },
@@ -24,13 +12,12 @@ const galleryItems = [
 ];
 
 const Gallery = () => {
-  const [sectionRef, inView] = useInView(0.08);
   const [activeItem, setActiveItem] = useState(null);
 
   return (
-    <section className="gallery" id="gallery" ref={sectionRef}>
+    <section className="gallery" id="gallery">
       <div className="container">
-        <div className={`gallery__header fade-in-up ${inView ? 'visible' : ''}`}>
+        <div className="gallery__header" data-aos="fade-up">
           <span className="section-label">Gallery & Events</span>
           <h2 className="section-title">Where Great Speakers <span className="underline-accent">Are Made</span></h2>
           <p className="section-subtitle">
@@ -43,7 +30,7 @@ const Gallery = () => {
             <div
               key={item.id}
               id={item.id}
-              className={`gallery__item gallery__item--${item.span} fade-in-up ${inView ? 'visible' : ''}`}
+              className={`gallery__item gallery__item--${item.span}`} data-aos="fade-up"
               style={{ transitionDelay: `${i * 0.08}s` }}
               onClick={() => setActiveItem(item)}
             >

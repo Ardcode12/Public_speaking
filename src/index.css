@@ -14,7 +14,7 @@
   --charcoal-soft: #2B2B2B;
   --charcoal-mid: #3a3a3a;
   --section-bg: #696969;
-  --section-light: #e8e8e8;
+  --section-light: #ffffff;
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.12);
   --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.18);
@@ -71,9 +71,9 @@ button {
 
 /* ---- UTILITIES ---- */
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 8px;
 }
 
 .section-label {
@@ -163,39 +163,7 @@ button {
   box-shadow: var(--shadow-lg);
 }
 
-/* ---- FADE-IN ANIMATION ---- */
-.fade-in-up {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
 
-.fade-in-up.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.fade-in-left {
-  opacity: 0;
-  transform: translateX(-40px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-
-.fade-in-left.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.fade-in-right {
-  opacity: 0;
-  transform: translateX(40px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-
-.fade-in-right.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
 
 /* ---- YELLOW UNDERLINE ACCENT ---- */
 .underline-accent {

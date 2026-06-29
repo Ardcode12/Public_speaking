@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -10,13 +12,25 @@ import Gallery from './components/Gallery';
 import CTABanner from './components/CTABanner';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import GlobalLoader from './components/GlobalLoader';
 import './App.css';
 
 function App() {
+  const [isAppLoaded, setIsAppLoaded] = useState(false);
+
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 100,
+    });
+  }, []);
+
   return (
     <div className="App">
+      <GlobalLoader isLoaded={isAppLoaded} />
       <Navbar />
-      <Hero />
+      <Hero onModelLoaded={() => setIsAppLoaded(true)} />
       <About />
       <Services />
       <WhyChooseUs />
