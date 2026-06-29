@@ -1,36 +1,40 @@
 import React, { useRef, useEffect, Suspense, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, OrbitControls, Environment } from '@react-three/drei';
+import { clone as cloneSkeleton } from 'three/examples/jsm/utils/SkeletonUtils';
 import * as THREE from 'three';
 import { HERO_MODEL_SETTINGS } from '../config/modelSettings';
 import './HeroModel.css';
 
 /* ─────────────────────────────────────────────────────────────────
-   GLB MODEL — only mounted after file existence is confirmed
+   GENERIC GLB MODEL — driven entirely by a settings object (S)
 ───────────────────────────────────────────────────────────────── */
-const GLBModel = ({ onLoaded }) => {
-    const S = HERO_MODEL_SETTINGS.model;
-    const meshRef = useRef();
-    const mixerRef = useRef();
-    const clockRef = useRef(new THREE.Clock());
+const GLBModel = ({ settings: S, onLoaded }) => {
+    const meshRef   = useRef();
+    const mixerRef  = useRef();
+    const clockRef  = useRef(new THREE.Clock());
 
     const { scene, animations } = useGLTF(S.modelPath);
-    const clonedScene = React.useMemo(() => scene.clone(true), [scene]);
+    // SkeletonUtils.clone properly deep-clones skinned meshes + skeleton
+    // bones — scene.clone(true) breaks skeleton bindings so animations won't play
+    const clonedScene = React.useMemo(() => cloneSkeleton(scene), [scene]);
 
     useEffect(() => {
         if (animations?.length > 0) {
-            const mixer = new THREE.AnimationMixer(clonedScene);
-            const idx = Math.min(S.animationIndex, animations.length - 1);
+            const mixer  = new THREE.AnimationMixer(clonedScene);
+            const idx    = Math.min(S.animationIndex, animations.length - 1);
             const action = mixer.clipAction(animations[idx]);
+            action.setLoop(THREE.LoopRepeat, Infinity);
             action.timeScale = S.animationSpeed;
+            action.reset();
             action.play();
             mixerRef.current = mixer;
         }
         if (S.overrideMaterial) {
             clonedScene.traverse((child) => {
                 if (child.isMesh && child.material) {
-                    child.material.color    = new THREE.Color(S.color);
-                    child.material.emissive = new THREE.Color(S.emissive);
+                    child.material.color     = new THREE.Color(S.color);
+                    child.material.emissive  = new THREE.Color(S.emissive);
                     child.material.metalness = S.metalness;
                     child.material.roughness = S.roughness;
                     child.material.needsUpdate = true;
@@ -40,9 +44,7 @@ const GLBModel = ({ onLoaded }) => {
         return () => mixerRef.current?.stopAllAction();
     }, [clonedScene, animations, S]);
 
-    useEffect(() => {
-        if (onLoaded) onLoaded();
-    }, [onLoaded]);
+    useEffect(() => { if (onLoaded) onLoaded(); }, [onLoaded]);
 
     useFrame(() => {
         const dt = clockRef.current.getDelta();
@@ -72,8 +74,7 @@ const GLBModel = ({ onLoaded }) => {
 };
 
 /* ─────────────────────────────────────────────────────────────────
-   FALLBACK — golden spinning octahedron (shown while loading or
-   if no GLB placed yet)
+   FALLBACK — golden spinning octahedron
 ───────────────────────────────────────────────────────────────── */
 const FallbackModel = () => {
     const meshRef = useRef();
@@ -113,23 +114,32 @@ const SceneLighting = () => {
                 position={[L.fillX, L.fillY, L.fillZ]} />
             <pointLight intensity={L.rimIntensity} color={L.rimColor}
                 position={[L.rimX, L.rimY, L.rimZ]} />
+            {/* Extra fill light from woman's side */}
+            <pointLight intensity={0.6} color={0x80ffb0} position={[3, 2, 2]} />
         </>
     );
 };
 
 /* ─────────────────────────────────────────────────────────────────
-   SCENE CONTENT — switches between GLB and fallback based on
-   whether the file was successfully fetched
+   SCENE CONTENT — both mike + woman, each with its own Suspense
 ───────────────────────────────────────────────────────────────── */
-const SceneContent = ({ modelReady, onModelLoaded }) => {
-    if (modelReady) {
-        return (
-            <Suspense fallback={<FallbackModel />}>
-                <GLBModel onLoaded={onModelLoaded} />
-            </Suspense>
-        );
-    }
-    return <FallbackModel />;
+const SceneContent = ({ mikeReady, womanReady, onModelLoaded }) => {
+    return (
+        <>
+            {mikeReady ? (
+                <Suspense fallback={<FallbackModel />}>
+                    <GLBModel settings={HERO_MODEL_SETTINGS.model} onLoaded={onModelLoaded} />
+                </Suspense>
+            ) : (
+                <FallbackModel />
+            )}
+            {womanReady && HERO_MODEL_SETTINGS.womanModel.enabled && (
+                <Suspense fallback={null}>
+                    <GLBModel settings={HERO_MODEL_SETTINGS.womanModel} />
+                </Suspense>
+            )}
+        </>
+    );
 };
 
 /* ─────────────────────────────────────────────────────────────────
@@ -146,28 +156,34 @@ const LoadingSpinner = () => (
    MAIN EXPORT
 ───────────────────────────────────────────────────────────────── */
 const HeroModel = ({ onModelLoaded }) => {
-    const S = HERO_MODEL_SETTINGS;
-    const C = S.camera;
+    const S   = HERO_MODEL_SETTINGS;
+    const C   = S.camera;
     const Ctrl = S.controls;
-    const Env = S.environment;
-    const Cv = S.canvas;
+    const Env  = S.environment;
+    const Cv   = S.canvas;
 
-    // Check file exists before attempting useGLTF (avoids uncaught crash)
-    const [modelReady, setModelReady] = useState(false);
-    const [checking, setChecking] = useState(true);
+    const [mikeReady,  setMikeReady]  = useState(false);
+    const [womanReady, setWomanReady] = useState(false);
+    const [checking,   setChecking]   = useState(true);
 
     useEffect(() => {
+        let resolved = 0;
+        const total  = S.womanModel.enabled ? 2 : 1;
+        const done   = () => { resolved++; if (resolved === total) setChecking(false); };
+
         fetch(S.model.modelPath, { method: 'HEAD' })
-            .then(res => { 
-                setModelReady(res.ok);
-                if (!res.ok && onModelLoaded) onModelLoaded();
-            })
-            .catch(() => { 
-                setModelReady(false);
-                if (onModelLoaded) onModelLoaded();
-            })
-            .finally(() => setChecking(false));
-    }, [S.model.modelPath, onModelLoaded]);
+            .then(res => { setMikeReady(res.ok); if (!res.ok && onModelLoaded) onModelLoaded(); })
+            .catch(() => { setMikeReady(false); if (onModelLoaded) onModelLoaded(); })
+            .finally(done);
+
+        if (S.womanModel.enabled) {
+            fetch(S.womanModel.modelPath, { method: 'HEAD' })
+                .then(res => setWomanReady(res.ok))
+                .catch(() => setWomanReady(false))
+                .finally(done);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <div className="hero-model__wrap">
@@ -198,18 +214,17 @@ const HeroModel = ({ onModelLoaded }) => {
                         enableDamping
                         dampingFactor={Ctrl.dampingFactor}
                     />
-                    <SceneContent modelReady={modelReady} onModelLoaded={onModelLoaded} />
+                    <SceneContent
+                        mikeReady={mikeReady}
+                        womanReady={womanReady}
+                        onModelLoaded={onModelLoaded}
+                    />
                 </Canvas>
             )}
 
             {!checking && (
                 <div className="hero-model__hint">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" strokeWidth="2">
-                        <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0m0 0V3a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v10"/>
-                        <path d="M6 14v0a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4v-2.5"/>
-                    </svg>
-                    Drag to rotate
+
                 </div>
             )}
         </div>

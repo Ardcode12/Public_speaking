@@ -51,11 +51,6 @@ const Hero = ({ onModelLoaded }) => {
                 </div>
             </div>
 
-            {/* SCROLL INDICATOR */}
-            <div className="hero__scroll-hint">
-                <span>Scroll to explore</span>
-                <ChevronDown size={18} className="hero__scroll-icon" />
-            </div>
         </section>
     );
 };

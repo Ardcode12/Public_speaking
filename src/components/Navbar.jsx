@@ -7,8 +7,6 @@ const navLinks = [
   { label: 'Services', href: '#services' },
   { label: 'Why Us', href: '#why-us' },
   { label: 'Trainers', href: '#trainers' },
-  { label: 'Testimonials', href: '#testimonials' },
-  { label: 'Gallery', href: '#gallery' },
   { label: 'Contact', href: '#contact' },
 ];
 
@@ -38,7 +36,7 @@ const Navbar = () => {
           </div>
           <div className="navbar__logo-names">
             <span className="navbar__logo-kural">KURAL</span>
-            <span className="navbar__logo-text">Voice<span className="navbar__logo-accent">Forward</span></span>
+            
           </div>
         </a>
 

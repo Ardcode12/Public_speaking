@@ -62,7 +62,6 @@ const Footer = () => {
               ['Services', '#services'],
               ['Why Choose Us', '#why-us'],
               ['Trainers', '#trainers'],
-              ['Testimonials', '#testimonials'],
               ['Gallery', '#gallery'],
               ['Contact', '#contact'],
             ].map(([label, href]) => (

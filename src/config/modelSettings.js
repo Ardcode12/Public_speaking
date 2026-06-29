@@ -17,9 +17,9 @@ export const HERO_MODEL_SETTINGS = {
         modelPath: '/models/microfono_vintage.glb',   // ← Change this to your .glb filename
 
         // ── TRANSFORM ─────────────────────────────────────────────
-        scale:  0.3,    // Size multiplier (1 = original size)
-        x:      0.0,    // Left (-) / Right (+)
-        y:     -3.5,    // Down (-) / Up (+)
+        scale:  0.27,    // Size multiplier (1 = original size)
+        x:     -0.12,    // Left (-) / Right (+)
+        y:     -3.0,    // Down (-) / Up (+)
         z:      0.0,    // Forward (+) / Back (-)
 
         // ── ROTATION (radians: Math.PI = 180°) ────────────────────
@@ -35,8 +35,8 @@ export const HERO_MODEL_SETTINGS = {
         idleFloat:       false,  // Enable subtle up/down float
         idleFloatSpeed:  0.8,   // Float oscillation speed
         idleFloatAmount: 0.12,  // How far it floats (units)
-        idleRotSpeed:    0.4,   // Auto-spin speed (0 = off)
-        idleRotAmount:   0.003, // Degrees per frame for auto-spin
+        idleRotSpeed:    0.03,   // Auto-spin speed (0 = off)
+        idleRotAmount:   0.007,   // Degrees per frame for auto-spin
 
         // ── MATERIAL OVERRIDES ────────────────────────────────────
         overrideMaterial: false, // Set true to apply tint/emissive below
@@ -44,6 +44,45 @@ export const HERO_MODEL_SETTINGS = {
         emissive: 0x1a0a00,      // Glow/dark shade colour (hex)
         metalness: 0.4,          // 0 = plastic, 1 = full metal
         roughness: 0.5,          // 0 = mirror, 1 = matte
+    },
+
+    // ══════════════════════════════════════════════════════════════════
+    // 👩 WOMAN MODEL (green student)
+    // ══════════════════════════════════════════════════════════════════
+    womanModel: {
+        enabled: false,   // ← set false to hide the green girl
+
+        modelPath: '/models/man.glb',
+
+        // ── TRANSFORM ─────────────────────────────────────────────
+        scale:  2.4,    // Size multiplier
+        x:      0.4,    // Positioned to the right of the mike
+        y:     -2.2,    // Ground level
+        z:      -1,
+
+        // ── ROTATION ──────────────────────────────────────────────
+        rotX:   0,
+        rotY:  -1.0,    // Slightly turned toward center
+        rotZ:   0,
+
+        // ── ANIMATION ─────────────────────────────────────────────
+        animationIndex: 0,
+        animationSpeed: 1.0,
+
+        // ── IDLE FLOATING ─────────────────────────────────────────
+        idleFloat:       false,
+        idleFloatSpeed:  0.6,
+        idleFloatAmount: 0.08,
+        idleRotAmount:   0.0,
+
+        // ── MATERIAL OVERRIDES ────────────────────────────────────
+        // Set true ONLY if the model has no textures and you want to paint it a solid color.
+        // Keep false to preserve the model's own baked-in colors/textures.
+        overrideMaterial: false,
+        color:    0xc8a882,
+        emissive: 0x1a0800,
+        metalness: 0.1,
+        roughness: 0.6,
     },
 
     // ══════════════════════════════════════════════════════════════════
