@@ -191,3 +191,8 @@
   .navbar__hamburger { display: flex; }
   .navbar__mobile { display: block; }
 }
+
+@media (max-width: 600px) {
+  .navbar__logo-img-wrap { width: 68px; height: 68px; }
+  .navbar__logo-kural { font-size: 1.05rem; letter-spacing: 4px; }
+}

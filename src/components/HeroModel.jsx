@@ -60,6 +60,12 @@ const GLBModel = ({ settings: S, onLoaded, isMobile }) => {
 
     useEffect(() => { if (onLoaded) onLoaded(); }, [onLoaded]);
 
+    // Fallback to desktop values if mobile values aren't set
+    const currentScale = isMobile ? (S.mobileScale ?? S.scale) : S.scale;
+    const currentX = isMobile ? (S.mobileX ?? S.x) : S.x;
+    const currentY = isMobile ? (S.mobileY ?? S.y) : S.y;
+    const currentZ = isMobile ? (S.mobileZ ?? S.z) : S.z;
+
     useFrame(() => {
         const dt = clockRef.current.getDelta();
         mixerRef.current?.update(dt);
@@ -67,7 +73,7 @@ const GLBModel = ({ settings: S, onLoaded, isMobile }) => {
         const t = performance.now() * 0.001;
         if (S.idleFloat) {
             meshRef.current.position.y =
-                S.y + Math.sin(t * S.idleFloatSpeed) * S.idleFloatAmount;
+                currentY + Math.sin(t * S.idleFloatSpeed) * S.idleFloatAmount;
         }
         if (S.idleRotAmount > 0) {
             meshRef.current.rotation.y += S.idleRotAmount;
@@ -78,8 +84,8 @@ const GLBModel = ({ settings: S, onLoaded, isMobile }) => {
         <primitive
             ref={meshRef}
             object={clonedScene}
-            scale={S.scale}
-            position={[S.x, S.y, S.z]}
+            scale={currentScale}
+            position={[currentX, currentY, currentZ]}
             rotation={[S.rotX, S.rotY, S.rotZ]}
             // Shadows disabled on mobile — expensive on mobile GPUs
             castShadow={!isMobile}
@@ -251,7 +257,8 @@ const HeroModel = ({ onModelLoaded }) => {
                     // Shadows disabled entirely on mobile
                     shadows={isMobile ? false : Cv.shadows}
                     gl={glConfig}
-                    camera={{ fov: C.fov, position: [C.x, C.y, C.z], near: 0.1, far: 100 }}
+                    // Uses mobileZ if available
+                    camera={{ fov: C.fov, position: [C.x, C.y, isMobile ? (C.mobileZ ?? C.z) : C.z], near: 0.1, far: 100 }}
                     style={{ background: 'transparent' }}
                     frameloop="always"
                 >

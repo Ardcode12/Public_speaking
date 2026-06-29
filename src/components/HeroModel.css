@@ -17,19 +17,19 @@
 
 @media (max-width: 768px) {
   .hero-model__wrap {
-    min-height: 320px;
+    min-height: 480px;
   }
   .hero-model__wrap canvas {
-    min-height: 320px;
+    min-height: 480px;
   }
 }
 
 @media (max-width: 480px) {
   .hero-model__wrap {
-    min-height: 260px;
+    min-height: 420px;
   }
   .hero-model__wrap canvas {
-    min-height: 260px;
+    min-height: 420px;
   }
 }
 

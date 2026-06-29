@@ -22,6 +22,13 @@ export const HERO_MODEL_SETTINGS = {
         y:     -3.0,    // Down (-) / Up (+)
         z:      0.0,    // Forward (+) / Back (-)
 
+        // ── MOBILE OVERRIDES ──────────────────────────────────────
+        // Use these to adjust size/position ONLY on phones (keeps desktop safe)
+        mobileScale: 0.28,   // Larger on mobile
+        mobileX:     0.0,    // Centered on mobile
+        mobileY:    -3.4,    // Lowered slightly
+        mobileZ:     0.0,
+
         // ── ROTATION (radians: Math.PI = 180°) ────────────────────
         rotX:   0,              // Tilt forward/back
         rotY:   0,              // Spin left/right  ← most useful
@@ -60,6 +67,12 @@ export const HERO_MODEL_SETTINGS = {
         y:     -2.2,    // Ground level
         z:      -1,
 
+        // ── MOBILE OVERRIDES ──────────────────────────────────────
+        mobileScale: 2.6,
+        mobileX:     0.0,
+        mobileY:    -2.2,
+        mobileZ:     -1,
+
         // ── ROTATION ──────────────────────────────────────────────
         rotX:   0,
         rotY:  -1.0,    // Slightly turned toward center
@@ -93,6 +106,8 @@ export const HERO_MODEL_SETTINGS = {
         x:    0,    // Camera X offset
         y:    0.5,  // Camera Y offset (lift up slightly)
         z:    5.5,  // Distance from model (pull back for bigger scene)
+        
+        mobileZ: 5.5, // Distance on mobile
     },
 
     // ══════════════════════════════════════════════════════════════════
