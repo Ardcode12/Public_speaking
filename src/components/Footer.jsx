@@ -1,4 +1,5 @@
 import React from 'react';
+import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import './Footer.css';
 
 const Footer = () => {
@@ -10,8 +11,13 @@ const Footer = () => {
         {/* BRAND */}
         <div className="footer__brand">
           <a href="#home" className="footer__logo">
-            <span className="footer__logo-icon">🎤</span>
-            <span>Voice<span className="footer__logo-accent">Forward</span></span>
+            <div className="footer__logo-img-wrap">
+              <img src="/images/newlogo.png" alt="Kural logo" className="footer__logo-img" />
+            </div>
+            <div className="footer__logo-names">
+              <span className="footer__logo-kural">KURAL</span>
+              <span className="footer__logo-sub">Voice<span className="footer__logo-accent">Forward</span></span>
+            </div>
           </a>
           <p className="footer__tagline">
             Transforming voices. Building leaders. Creating impact — one speaker at a time.
@@ -65,7 +71,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* SERVICES */}
+        {/* PROGRAMS */}
         <div className="footer__col">
           <h4 className="footer__col-title">Programs</h4>
           <ul className="footer__links">
@@ -88,19 +94,19 @@ const Footer = () => {
           <h4 className="footer__col-title">Contact</h4>
           <ul className="footer__contact-list">
             <li>
-              <span className="footer__contact-icon">📍</span>
+              <span className="footer__contact-icon"><MapPin size={15} strokeWidth={2} /></span>
               14 Speaker's Row, London EC1A 1BB, UK
             </li>
             <li>
-              <span className="footer__contact-icon">📞</span>
+              <span className="footer__contact-icon"><Phone size={15} strokeWidth={2} /></span>
               <a href="tel:+442071234567" className="footer__link">+44 (0) 20 7123 4567</a>
             </li>
             <li>
-              <span className="footer__contact-icon">✉️</span>
+              <span className="footer__contact-icon"><Mail size={15} strokeWidth={2} /></span>
               <a href="mailto:hello@voiceforward.co.uk" className="footer__link">hello@voiceforward.co.uk</a>
             </li>
             <li>
-              <span className="footer__contact-icon">🕐</span>
+              <span className="footer__contact-icon"><Clock size={15} strokeWidth={2} /></span>
               Mon–Fri, 9am – 6pm GMT
             </li>
           </ul>

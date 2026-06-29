@@ -18,7 +18,7 @@ const Hero = ({ onModelLoaded }) => {
                     {/* KURAL big name */}
                     <div className="hero__kural-brand">
                         <span className="hero__kural-name">KURAL</span>
-                        <span className="hero__kural-sub">VoiceForward</span>
+                        <span className="hero__kural-sub">LET EVERY KURAL INITIATE A CHANGE</span>
                     </div>
 
                     <h1 className="hero__title">
