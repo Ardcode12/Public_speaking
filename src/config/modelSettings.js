@@ -1,0 +1,120 @@
+// ╔══════════════════════════════════════════════════════════════════════╗
+// ║   🎤 VOICEFORWARD — HERO 3D MODEL SETTINGS                          ║
+// ║                                                                      ║
+// ║   HOW TO USE:                                                        ║
+// ║   • Drop your .glb file into /public/models/                        ║
+// ║   • Set modelPath below to match the filename                        ║
+// ║   • Save this file → browser hot-reloads instantly                  ║
+// ║   • Adjust numbers and watch the model move live                     ║
+// ╚══════════════════════════════════════════════════════════════════════╝
+
+export const HERO_MODEL_SETTINGS = {
+
+    // ══════════════════════════════════════════════════════════════════
+    // 📦 MODEL FILE
+    // ══════════════════════════════════════════════════════════════════
+    model: {
+        modelPath: '/models/speaker.glb',   // ← Change this to your .glb filename
+
+        // ── TRANSFORM ─────────────────────────────────────────────
+        scale:  1.8,    // Size multiplier (1 = original size)
+        x:      0.0,    // Left (-) / Right (+)
+        y:     -1.2,    // Down (-) / Up (+)
+        z:      0.0,    // Forward (+) / Back (-)
+
+        // ── ROTATION (radians: Math.PI = 180°) ────────────────────
+        rotX:   0,              // Tilt forward/back
+        rotY:   0,              // Spin left/right  ← most useful
+        rotZ:   0,              // Lean sideways
+
+        // ── ANIMATION ─────────────────────────────────────────────
+        animationIndex: 0,      // Which built-in animation to play (0 = first)
+        animationSpeed: 1.0,    // Playback speed multiplier
+
+        // ── IDLE FLOATING ─────────────────────────────────────────
+        idleFloat:       true,  // Enable subtle up/down float
+        idleFloatSpeed:  0.8,   // Float oscillation speed
+        idleFloatAmount: 0.12,  // How far it floats (units)
+        idleRotSpeed:    0.4,   // Auto-spin speed (0 = off)
+        idleRotAmount:   0.003, // Degrees per frame for auto-spin
+
+        // ── MATERIAL OVERRIDES ────────────────────────────────────
+        overrideMaterial: false, // Set true to apply tint/emissive below
+        color:    0xffffff,      // Base tint colour (hex)
+        emissive: 0x1a0a00,      // Glow/dark shade colour (hex)
+        metalness: 0.4,          // 0 = plastic, 1 = full metal
+        roughness: 0.5,          // 0 = mirror, 1 = matte
+    },
+
+    // ══════════════════════════════════════════════════════════════════
+    // 📷 CAMERA
+    // ══════════════════════════════════════════════════════════════════
+    camera: {
+        fov:  45,   // Field of view (degrees) — higher = wider lens
+        x:    0,    // Camera X offset
+        y:    0.5,  // Camera Y offset (lift up slightly)
+        z:    5.5,  // Distance from model (pull back for bigger scene)
+    },
+
+    // ══════════════════════════════════════════════════════════════════
+    // 💡 LIGHTING
+    // ══════════════════════════════════════════════════════════════════
+    lighting: {
+        ambientIntensity:   0.7,   // Overall brightness (0–3)
+        ambientColor:       0xffffff,
+
+        spotIntensity:      1.8,   // Main spot light strength
+        spotColor:          0xEDB927,  // Spot colour → yellow accent!
+        spotX:              3,
+        spotY:              5,
+        spotZ:              3,
+        spotAngle:          0.4,
+        spotPenumbra:       0.6,
+
+        fillIntensity:      0.5,   // Soft fill light (opposite side)
+        fillColor:          0x404060,
+        fillX:             -3,
+        fillY:              2,
+        fillZ:             -3,
+
+        rimIntensity:       0.8,   // Back-rim / outline glow
+        rimColor:           0xEDB927,
+        rimX:               0,
+        rimY:               3,
+        rimZ:              -4,
+    },
+
+    // ══════════════════════════════════════════════════════════════════
+    // 🎮 INTERACTION
+    // ══════════════════════════════════════════════════════════════════
+    controls: {
+        orbitEnabled:  true,   // Allow mouse drag to rotate
+        zoomEnabled:   false,  // Allow scroll to zoom
+        panEnabled:    false,  // Allow pan (usually off)
+        autoRotate:    false,  // Constant auto-rotation
+        autoRotateSpeed: 1.5,  // Speed if autoRotate = true
+        minPolarAngle: 0.5,    // Vertical limit (top)
+        maxPolarAngle: 2.2,    // Vertical limit (bottom)
+        dampingFactor: 0.08,   // Mouse drag smoothness
+    },
+
+    // ══════════════════════════════════════════════════════════════════
+    // 🌍 ENVIRONMENT / BACKGROUND
+    // ══════════════════════════════════════════════════════════════════
+    environment: {
+        preset: 'city',     // HDR env: 'city' | 'sunset' | 'dawn' | 'night' | 'warehouse' | 'forest' | 'apartment' | 'studio' | 'park' | 'lobby'
+        background: false,  // Show env as actual background?
+        blur: 0.6,          // Env background blur amount
+    },
+
+    // ══════════════════════════════════════════════════════════════════
+    // 🎨 CANVAS / RENDERER
+    // ══════════════════════════════════════════════════════════════════
+    canvas: {
+        shadows:        true,
+        antialias:      true,
+        alpha:          true,   // Transparent canvas bg (keeps section bg visible)
+        toneMapping:    'ACESFilmic', // 'ACESFilmic' | 'Linear' | 'Cineon' | 'Reinhard'
+        toneMappingExposure: 1.1,
+    },
+};

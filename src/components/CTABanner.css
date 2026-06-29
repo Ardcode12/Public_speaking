@@ -1,0 +1,118 @@
+/* ---- CTA BANNER ---- */
+.cta-banner {
+  position: relative;
+  background: var(--yellow);
+  padding: 96px 0;
+  overflow: hidden;
+}
+
+.cta-banner__bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 10% 50%, rgba(255,255,255,0.15) 0%, transparent 50%),
+    radial-gradient(circle at 90% 20%, rgba(0,0,0,0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.cta-banner__content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 64px;
+  align-items: center;
+}
+
+.cta-banner__label {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(26,26,26,0.7);
+  margin-bottom: 12px;
+}
+
+.cta-banner__title {
+  font-family: var(--font-head);
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 900;
+  color: var(--charcoal);
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+
+.cta-banner__title span {
+  position: relative;
+  display: inline-block;
+}
+
+.cta-banner__title span::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--charcoal);
+  border-radius: 2px;
+}
+
+.cta-banner__subtitle {
+  font-size: 1rem;
+  color: rgba(26, 26, 26, 0.72);
+  max-width: 560px;
+  line-height: 1.75;
+}
+
+.cta-banner__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.cta-banner__btn-primary {
+  white-space: nowrap;
+  font-size: 1rem;
+  padding: 16px 36px;
+  background: var(--charcoal);
+  color: var(--white);
+}
+
+.cta-banner__btn-primary:hover {
+  background: var(--charcoal-soft);
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+.cta-banner__btn-phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--charcoal);
+  transition: var(--transition);
+  border-bottom: 1.5px solid rgba(26,26,26,0.3);
+  padding-bottom: 2px;
+}
+
+.cta-banner__btn-phone:hover {
+  border-color: var(--charcoal);
+  gap: 12px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .cta-banner__content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+  .cta-banner__subtitle { margin: 0 auto; }
+  .cta-banner__actions { align-items: center; width: 100%; }
+  .cta-banner__title span::after { display: none; }
+}
